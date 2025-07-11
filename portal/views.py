@@ -4,6 +4,8 @@ from django.contrib.auth import login
 from .forms import SignUpForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 
 
 def home(request):
@@ -14,6 +16,9 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid(): 
             user = form.save()
+            if user.is_teacher:
+                # Additional logic for teachers can be added here
+                pass
             login(request, user)
             return redirect('home')
     else:
@@ -37,3 +42,14 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+#protected view for course
+@login_required 
+def course_view(request):
+    # Placeholder for course view logic
+    return HttpResponse("Course view not implemented yet.")
+
+@login_required
+def course_management_view(request):
+    # Placeholder for course management view logic
+    return HttpResponse("Course management view not implemented yet.")
