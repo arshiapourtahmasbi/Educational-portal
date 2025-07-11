@@ -3,7 +3,17 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class User(AbstractUser):
-    """
-    Custom user model to differentiate between students and teachers.
-    """
-    is_teacher = models.BooleanField('teacher status', default=False)
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='portal_user_set',
+        blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups'
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='portal_user_set',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions'
+    )
