@@ -17,8 +17,10 @@ def signup(request):
         if form.is_valid(): 
             user = form.save()
             if user.is_teacher:
-                # Additional logic for teachers can be added here
-                pass
+                user.is_teacher = True
+            else:
+                user.is_teacher = False
+            user.save()
             login(request, user)
             return redirect('home')
     else:
