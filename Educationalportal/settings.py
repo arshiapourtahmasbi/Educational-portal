@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'portal',  # Custom app for the educational portal
+    'course',  # App for course management
 ]
 
 MIDDLEWARE = [
