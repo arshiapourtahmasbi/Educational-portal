@@ -18,6 +18,8 @@ class Course(models.Model):
         on_delete=models.CASCADE,
         limit_choices_to={'is_teacher': True},
     )
+    capacity = models.PositiveIntegerField()
+    pre_requisites = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
