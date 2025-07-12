@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.conf import settings
 
@@ -10,6 +11,8 @@ class Course(models.Model):
     """
     title = models.CharField(max_length=200)
     description = models.TextField()
+    date = models.DateField()  
+    time = models.TimeField()
     teacher = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
