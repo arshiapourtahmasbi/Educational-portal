@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Enrolled Students - {{ course.title }}</h2>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Course Details</h5>
+            <p class="card-text"><strong>Description:</strong> {{ course.description }}</p>
+            <p class="card-text"><strong>Date:</strong> {{ course.date }}</p>
+            <p class="card-text"><strong>Time:</strong> {{ course.time }}</p>
+            <p class="card-text"><strong>Available Seats:</strong> {{ course.capacity }}</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Enrolled Students</h5>
+            {% if enrollments %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Enrollment Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for enrollment in enrollments %}
+                        <tr>
+                            <td>{{ enrollment.student.get_full_name|default:enrollment.student.username }}</td>
+                            <td>{{ enrollment.student.email }}</td>
+                            <td>{{ enrollment.enrollment_date|date:"M d, Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No students are currently enrolled in this course.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <a href="{% url 'course_list' %}" class="btn btn-primary">Back to Courses</a>
+    </div>
+</div>
+{% endblock %}

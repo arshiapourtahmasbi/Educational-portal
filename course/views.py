@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, ListView
 from .models import Course
 from .forms import CourseForm
@@ -43,5 +43,23 @@ def remove_course(request, course_id):
             return render(request, 'courses/error.html', {'message': 'You do not have permission to delete this course.'})
     except Course.DoesNotExist:
         return render(request, 'courses/error.html', {'message': 'Course not found.'})
+
+@login_required
+def enrolled_students(request, course_id):
+    # Get course and verify teacher permission
+    course = get_object_or_404(Course, id=course_id)
+    if request.user != course.teacher:
+        return render(request, 'courses/error.html', 
+                     {'message': 'You do not have permission to view this course\'s enrollments.'})
     
+    # Get all active enrollments for the course
+    enrollments = course.enrollments.filter(   # type: ignore
+        status='enrolled'
+    ).select_related('student')
+    
+    return render(request, 'courses/enrolled_students.html', {
+        'course': course,
+        'enrollments': enrollments
+    })
+
 

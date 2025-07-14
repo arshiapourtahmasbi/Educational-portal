@@ -12,8 +12,11 @@
                     <p class="card-text"><strong>Time:</strong> {{ course.time }}</p>
                     <p class="card-text"><strong>Available Seats:</strong> {{ course.capacity }}</p>
                     {% if user == course.teacher %}
-                        <a href="{% url 'remove_course' course.id %}" class="btn btn-danger btn-sm">Remove Course</a>
-                    
+                        <div class="btn-group">
+                            <a href="{% url 'enrolled_students' course.id %}" class="btn btn-info btn-sm">View Students</a>
+                            <a href="{% url 'remove_course' course.id %}" class="btn btn-danger btn-sm">Remove Course</a>
+                        </div>
+                     
                         <a href="{% url 'enroll_course' course.id %}" class="btn btn-primary btn-sm">Enroll</a>
                     {% endif %}
                 </div>
