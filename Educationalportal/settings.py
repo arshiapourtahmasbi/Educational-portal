@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'portal',  # Custom app for the educational portal
     'course',  # App for course management
+    'student',  # App for student management
 ]
 
 MIDDLEWARE = [

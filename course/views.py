@@ -43,3 +43,5 @@ def remove_course(request, course_id):
             return render(request, 'courses/error.html', {'message': 'You do not have permission to delete this course.'})
     except Course.DoesNotExist:
         return render(request, 'courses/error.html', {'message': 'Course not found.'})
+    
+
