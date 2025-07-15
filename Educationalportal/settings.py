@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'student',  # App for student management
 ]
 
+AUTH_USER_MODEL = 'portal.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

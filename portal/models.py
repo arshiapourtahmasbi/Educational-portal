@@ -1,8 +1,8 @@
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class User(AbstractUser):
+    is_teacher = models.BooleanField(default=False)
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='portal_user_set',
