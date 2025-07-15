@@ -47,11 +47,22 @@ nav a:hover {
 
 .card-body {
     padding: 20px;
+    text-align: left;
+    margin: 0 auto;
+    max-width: 600px;
 }
 
 .card-title {
     color: #333;
     margin-bottom: 10px;
+}
+
+.card-header {
+    background: #f8f9fa;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
 }
 
 /* Buttons */
@@ -125,4 +136,9 @@ form {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
+}
+
+.mb-4 {
+    margin-top: 0;
+    text-align: center;
 }

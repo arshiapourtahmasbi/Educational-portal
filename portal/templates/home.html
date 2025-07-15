@@ -30,9 +30,13 @@
         <button class="btn btn-info"><a href="{% url 'profile' %}">View Profile</a></button>
         <button class="btn btn-warning"><a href="{% url 'logout' %}">Logout</a></button>
         <p>Manage your courses:</p>
-        <button class="btn btn-primary"><a href="{% url 'course_list' %}">Courses</a></button>
+        <button class="btn btn-secondary"><a href="{% url 'course_list' %}">Courses</a></button>
         <button class="btn btn-secondary"><a href="{% url 'my_courses' %}">My Courses</a></button>
+        
+        {% if user.is_teacher %}
+        <p>As a teacher, you can:</p>
         <button class="btn btn-success"><a href="{% url 'create_course' %}">Create Course</a></button>
+        {% endif %}
         {% endif %}
     </div>
     {% endblock %}
