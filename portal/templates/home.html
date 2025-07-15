@@ -13,22 +13,26 @@
     <p>This is a platform for learning and sharing knowledge.</p>
 
     {% block content %}
-    <div class="container">
+    <div class="container"  >
+
+    
         <h2>Home Page</h2>
         <p>Explore our courses and resources.</p>
         
         {% if not user.is_authenticated %}
-        <a href="{% url 'signup' %}">Sign Up</a> |
-        <a href="{% url 'login' %}">Login</a> |
-        <a href="{% url 'course_list' %}">Courses</a>
+        <button class="btn btn-primary"><a href="{% url 'signup' %}">Sign Up</a></button>
+        <button class="btn btn-secondary"><a href="{% url 'login' %}">Login</a></button>
         {% endif %}
 
         {% if user.is_authenticated %}
-        <a href="{% url 'profile' %}">Profile</a> |
-        <a href="{% url 'logout' %}">Logout</a> |
-        <a href="{% url 'course_list' %}">Courses</a> |
-        <a href="{% url 'my_courses' %}">My Courses</a> |
-        <a href="{% url 'create_course' %}">Create Course</a>
+        <p>Hello, {{ user.username }}!</p>
+
+        <button class="btn btn-info"><a href="{% url 'profile' %}">View Profile</a></button>
+        <button class="btn btn-warning"><a href="{% url 'logout' %}">Logout</a></button>
+        <p>Manage your courses:</p>
+        <button class="btn btn-primary"><a href="{% url 'course_list' %}">Courses</a></button>
+        <button class="btn btn-secondary"><a href="{% url 'my_courses' %}">My Courses</a></button>
+        <button class="btn btn-success"><a href="{% url 'create_course' %}">Create Course</a></button>
         {% endif %}
     </div>
     {% endblock %}
