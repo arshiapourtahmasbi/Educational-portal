@@ -6,6 +6,7 @@ from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import EditProfileForm
+from django.contrib import messages
 
 
 
@@ -46,20 +47,24 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+@login_required
 def profile(request):
     if request.method == 'POST':
-        form = EditProfileForm(request.POST)
+        form = EditProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             user = form.save(commit=False)
-            user.email = form.cleaned_data['email']
-            user.username = form.cleaned_data['username']
-            user.password = form.cleaned_data['password']
-            if hasattr(user, 'is_teacher'):
-                user.is_teacher = form.cleaned_data['is_teacher']
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
+            password = form.cleaned_data.get('password')
+            if password:
+                user.set_password(password)
             user.save()
+            messages.success(request, 'Your profile was successfully updated!')
             return redirect('profile')
     else:
-        form = EditProfileForm()
+        form = EditProfileForm(instance=request.user, initial={
+            'email': request.user.email,
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'username': request.user.username,
+            'is_teacher': hasattr(request.user, 'is_teacher') and request.user.is_teacher
+        })
     return render(request, 'profile.html', {'form': form})
