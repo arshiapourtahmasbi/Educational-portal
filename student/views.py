@@ -3,19 +3,39 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from course.models import Course
 from .models import Enrollment
+from django.db.models import Q
 
 @login_required
 def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     
-    # Check if student is already enrolled (only check active enrollments)
+    # Check if student is already enrolled
     if Enrollment.objects.filter(
         student=request.user, 
         course=course, 
-        status='enrolled'  # Only check for active enrollments
+        status='enrolled'
     ).exists():
         messages.warning(request, 'You are already enrolled in this course.')
         return redirect('my_courses')
+    
+    # Check for time conflicts with existing enrollments
+    existing_enrollments = Enrollment.objects.filter(
+        student=request.user,
+        status='enrolled'
+    ).select_related('course')
+    
+    for enrollment in existing_enrollments:
+        if enrollment.course.date == course.date:  # If same day
+            existing_start = enrollment.course.time
+            new_start = course.time
+            
+            # Assuming each course is 1 hour long
+            if abs((existing_start.hour - new_start.hour)) < 1:
+                messages.error(
+                    request,
+                    f'Time conflict with your enrolled course: {enrollment.course.title}'
+                )
+                return redirect('course_list')
     
     # If student previously dropped the course, update the existing record
     previous_enrollment = Enrollment.objects.filter(

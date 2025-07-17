@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'portal',  # Custom app for the educational portal
     'course',  # App for course management
     'student',  # App for student management
+    'django_extensions',
 ]
 
 AUTH_USER_MODEL = 'portal.User'
@@ -130,3 +131,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GRAPH_MODELS = {
+    'all_applications': True,
+    'group_models': True,
+}
+
+# Custom settings for the educational portal
