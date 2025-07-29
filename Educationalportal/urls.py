@@ -24,5 +24,5 @@ urlpatterns = [
     path('', include('portal.urls')),
     path('', include('course.urls')),
     path('', include('student.urls')),
-    path('', include('admin.urls'))
+    path('', include('adminportal.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'portal',  # Custom app for the educational portal
     'course',  # App for course management
     'student',  # App for student management
+    'adminportal',  # App for admin functionalities
     'django_extensions',
 ]
 

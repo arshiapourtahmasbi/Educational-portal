@@ -38,7 +38,14 @@
         <button class="btn btn-success"><a href="{% url 'create_course' %}">Create Course</a></button>
         {% endif %}
         {% endif %}
+        {% if user.is_admin %}
+        <p>Admin Options:</p>
+        <button class="btn btn-danger"><a href="{% url 'manage_users' %}">Manage Users</a></button>
+        {% endif %}
     </div>
     {% endblock %}
+
+
+
 </body>
 </html>

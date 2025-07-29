@@ -34,8 +34,11 @@ def login_view(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
-            if user is not None:   
-                login(request, user)
+            if user is not None: 
+                if not user.is_active:
+                    messages.error(request, 'Your account is inactive.')
+                    return redirect('login')
+            login(request, user)
             return redirect('home')
     else:
         form = LoginForm()
