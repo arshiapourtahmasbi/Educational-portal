@@ -18,10 +18,8 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid(): 
             user = form.save()
-            if user.is_teacher:
-                user.is_teacher = True
-            else:
-                user.is_teacher = False
+            user.is_teacher = form.cleaned_data.get('is_teacher', False)
+            user.is_admin = form.cleaned_data.get('is_admin', False)
             user.save()
             login(request, user)
             return redirect('home')

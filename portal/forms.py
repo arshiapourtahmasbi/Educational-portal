@@ -5,10 +5,11 @@ from .models import User  # Import User from local models
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
     is_teacher = forms.BooleanField(required=False, help_text='Check if you are a teacher.')
+    is_admin = forms.BooleanField(required=False, help_text='Check if you are an administrator.')
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', 'is_teacher')
+        fields = ('username', 'email', 'password1', 'password2', 'is_teacher', 'is_admin')
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150, required=True)
@@ -17,6 +18,7 @@ class LoginForm(forms.Form):
 class EditProfileForm(forms.ModelForm):
     email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
     is_teacher = forms.BooleanField(required=False, help_text='Check if you are a teacher.')
+    is_admin = forms.BooleanField(required=False, help_text='Check if you are an administrator.')
     first_name = forms.CharField(max_length=30, required=False)
     last_name = forms.CharField(max_length=30, required=False)
     password = forms.CharField(widget=forms.PasswordInput, required=False)
@@ -24,7 +26,7 @@ class EditProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'username')
+        fields = ('email', 'first_name', 'last_name', 'username', 'is_teacher', 'is_admin')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -48,6 +50,8 @@ class EditProfileForm(forms.ModelForm):
         
         if hasattr(user, 'is_teacher'):
             user.is_teacher = self.cleaned_data['is_teacher']
+        if hasattr(user, 'is_admin'):
+            user.is_admin = self.cleaned_data['is_admin']
         if commit:
             user.save()
         return user
