@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from portal.models import User
 from .forms import AdminUserEditForm
+from course.models import Course
+from student.models import Enrollment
+from django.db.models import Q
 
 def is_admin(user):
     return user.is_admin
@@ -61,3 +64,103 @@ def toggle_active(request, user_id):
         user.save()
         messages.success(request, f'Active status updated for {user.username}')
     return redirect('manage_users')
+
+@login_required
+@user_passes_test(is_admin)
+def manage_course_enrollments(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Get enrolled students
+    enrolled_students = Enrollment.objects.filter(
+        course=course,
+        status='enrolled'
+    ).select_related('student')
+    
+    # Get available students (not enrolled in this course)
+    enrolled_student_ids = enrolled_students.values_list('student_id', flat=True)
+    available_students = User.objects.exclude(
+        Q(id__in=enrolled_student_ids) | Q(is_teacher=True) | Q(is_admin=True)
+    )
+    
+    return render(request, 'admin/manage_course_enrollments.html', {
+        'course': course,
+        'enrolled_students': enrolled_students,
+        'available_students': available_students,
+    })
+
+@login_required
+@user_passes_test(is_admin)
+def admin_add_student(request, course_id, student_id):
+    if request.method == 'POST':
+        course = get_object_or_404(Course, id=course_id)
+        student = get_object_or_404(User, id=student_id)
+        
+        # Check if course has capacity
+        if course.capacity <= 0:
+            messages.error(request, 'Course is at maximum capacity')
+            return redirect('manage_course_enrollments', course_id=course_id)
+        
+        # Try to get existing enrollment or create new one
+        enrollment, created = Enrollment.objects.get_or_create(
+            student=student,
+            course=course,
+            defaults={'status': 'enrolled'}
+        )
+        
+        # If enrollment existed but was dropped, update it
+        if not created and enrollment.status == 'dropped':
+            enrollment.status = 'enrolled'
+            enrollment.save()
+            
+            # Update course capacity
+            course.capacity -= 1
+            course.save()
+            
+            messages.success(
+                request, 
+                f'Successfully re-enrolled {student.username} in {course.title}'
+            )
+        elif created:
+            # Update course capacity for new enrollment
+            course.capacity -= 1
+            course.save()
+            
+            messages.success(
+                request, 
+                f'Successfully added {student.username} to {course.title}'
+            )
+        else:
+            messages.warning(
+                request,
+                f'{student.username} is already enrolled in {course.title}'
+            )
+    
+    return redirect('manage_course_enrollments', course_id=course_id)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_remove_student(request, course_id, student_id):
+    if request.method == 'POST':
+        course = get_object_or_404(Course, id=course_id)
+        student = get_object_or_404(User, id=student_id)
+        
+        # Update enrollment status
+        enrollment = get_object_or_404(
+            Enrollment,
+            course=course,
+            student=student,
+            status='enrolled'
+        )
+        enrollment.status = 'dropped'
+        enrollment.save()
+        
+        # Update course capacity
+        course.capacity += 1
+        course.save()
+        
+        messages.success(
+            request, 
+            f'Successfully removed {student.username} from {course.title}'
+        )
+    
+    return redirect('manage_course_enrollments', course_id=course_id)
