@@ -5,6 +5,7 @@ from .forms import CourseForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from student.models import Enrollment  
+from django.contrib import messages
 
 class CourseListView(ListView):
     model = Course
@@ -97,5 +98,28 @@ def check_schedule_conflict(user, new_course):
                     return True
     
     return False
+
+@login_required
+def edit_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Check if user is the course teacher
+    if request.user != course.teacher:
+        return render(request, 'courses/error.html', 
+                     {'message': 'You do not have permission to edit this course.'})
+    
+    if request.method == 'POST':
+        form = CourseForm(request.POST, instance=course)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Course updated successfully!')
+            return redirect('course_list')
+    else:
+        form = CourseForm(instance=course)
+    
+    return render(request, 'courses/edit_course.html', {
+        'form': form,
+        'course': course
+    })
 
 
