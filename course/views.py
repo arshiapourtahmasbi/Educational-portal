@@ -4,6 +4,7 @@ from .models import Course
 from .forms import CourseForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from student.models import Enrollment  
 
 class CourseListView(ListView):
     model = Course
@@ -61,5 +62,40 @@ def enrolled_students(request, course_id):
         'course': course,
         'enrollments': enrollments
     })
+
+def check_schedule_conflict(user, new_course):
+    existing_enrollments = Enrollment.objects.filter(
+        student=user,
+        status='enrolled'
+    ).select_related('course')
+    
+    for enrollment in existing_enrollments:
+        existing_course = enrollment.course
+        
+        if new_course.schedule_type == 'date' and existing_course.schedule_type == 'date':
+            # Check date conflict
+            if existing_course.specific_date == new_course.specific_date:
+                if abs((existing_course.time.hour - new_course.time.hour)) < 1:
+                    return True
+        
+        elif new_course.schedule_type == 'weekday' and existing_course.schedule_type == 'weekday':
+            # Check weekday conflict
+            if existing_course.weekday == new_course.weekday:
+                if abs((existing_course.time.hour - new_course.time.hour)) < 1:
+                    return True
+        
+        elif new_course.schedule_type == 'weekday' and existing_course.schedule_type == 'date':
+            # Check if the specific date falls on the same weekday
+            if existing_course.specific_date is not None and existing_course.specific_date.weekday() == new_course.weekday:
+                if abs((existing_course.time.hour - new_course.time.hour)) < 1:
+                    return True
+        
+        elif new_course.schedule_type == 'date' and existing_course.schedule_type == 'weekday':
+            # Check if the specific date falls on the same weekday
+            if new_course.specific_date.weekday() == existing_course.weekday:
+                if abs((existing_course.time.hour - new_course.time.hour)) < 1:
+                    return True
+    
+    return False
 
 
