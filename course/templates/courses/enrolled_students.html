@@ -11,6 +11,14 @@
             <p class="card-text"><strong>Date:</strong> {{ course.date }}</p>
             <p class="card-text"><strong>Time:</strong> {{ course.time }}</p>
             <p class="card-text"><strong>Available Seats:</strong> {{ course.capacity }}</p>
+            <p class="card-text">
+                <strong>Price:</strong> 
+                {% if course.price == 0 %}
+                    Free
+                {% else %}
+                    ${{ course.price }}
+                {% endif %}
+            </p>
         </div>
     </div>
 

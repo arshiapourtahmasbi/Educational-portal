@@ -6,7 +6,7 @@ class CourseForm(forms.ModelForm):
         model = Course
         fields = ('title', 'description', 'content', 'schedule_type', 
                  'specific_date', 'weekday', 'time', 'capacity', 
-                 'pre_requisites')
+                 'pre_requisites', 'price')
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -48,5 +48,11 @@ class CourseForm(forms.ModelForm):
                 'class': 'form-control',
                 'rows': 2,
                 'placeholder': 'Prerequisites'
+            }),
+            'price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Course Price',
+                'min': '0',
+                'step': '0.01'
             }),
         }

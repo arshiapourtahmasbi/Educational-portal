@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ course.title }}</h2>
+        </div>
+        <div class="card-body">
+            <h5>Course Details</h5>
+            <p><strong>Teacher:</strong> {{ course.teacher.username }}</p>
+            <p><strong>Description:</strong> {{ course.description }}</p>
+            <p><strong>Schedule:</strong> {{ course.get_schedule_display }}</p>
+            <p><strong>Capacity:</strong> {{ course.capacity }}</p>
+            <p><strong>Prerequisites:</strong> {{ course.pre_requisites|default:"None" }}</p>
+            <p>
+                <strong>Price:</strong> 
+                {% if course.price == 0 %}
+                    Free
+                {% else %}
+                    ${{ course.price }}
+                {% endif %}
+            </p>
+
+            {% if user.is_authenticated and not user.is_teacher and not user.is_admin %}
+                <a href="{% url 'add_to_cart' course.id %}" class="btn btn-primary">Add to Cart (${{ course.price }})</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

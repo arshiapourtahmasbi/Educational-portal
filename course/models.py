@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from decimal import Decimal
 
 class Course(models.Model):
     WEEKDAY_CHOICES = [
@@ -36,6 +37,12 @@ class Course(models.Model):
     capacity = models.PositiveIntegerField()
     pre_requisites = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        default=Decimal('0.00'),
+        help_text="Course price in USD"
+    )
 
     def __str__(self):
         return self.title
