@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from course.models import Course
 from .models import Enrollment
-from django.db.models import Q
+from course.views import check_schedule_conflict
 
 @login_required
 def enroll_course(request, course_id):
@@ -18,38 +18,20 @@ def enroll_course(request, course_id):
         messages.warning(request, 'You are already enrolled in this course.')
         return redirect('my_courses')
     
-    # Check for time conflicts with existing enrollments
-    existing_enrollments = Enrollment.objects.filter(
-        student=request.user,
-        status='enrolled'
-    ).select_related('course')
+    # Check for schedule conflicts
+    if check_schedule_conflict(request.user, course):
+        messages.error(
+            request,
+            'This course conflicts with your existing schedule. Please check the course times.'
+        )
+        return redirect('course_detail', course_id=course.pk)
     
-    for enrollment in existing_enrollments:
-        if enrollment.course.date == course.date:  # If same day
-            existing_start = enrollment.course.time
-            new_start = course.time
-            
-            # Assuming each course is 1 hour long
-            if abs((existing_start.hour - new_start.hour)) < 1:
-                messages.error(
-                    request,
-                    f'Time conflict with your enrolled course: {enrollment.course.title}'
-                )
-                return redirect('course_list')
-    
-    # If student previously dropped the course, update the existing record
-    previous_enrollment = Enrollment.objects.filter(
+    # Create enrollment if no conflicts
+    enrollment = Enrollment.objects.create(
         student=request.user,
         course=course,
-        status='dropped'
-    ).first()
-    
-    if previous_enrollment:
-        previous_enrollment.status = 'enrolled'
-        previous_enrollment.save()
-    else:
-        # Create new enrollment if no previous record exists
-        Enrollment.objects.create(student=request.user, course=course)
+        status='enrolled'
+    )
     
     # Update course capacity
     course.capacity -= 1

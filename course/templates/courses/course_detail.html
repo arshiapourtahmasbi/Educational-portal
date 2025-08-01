@@ -10,7 +10,18 @@
             <h5>Course Details</h5>
             <p><strong>Teacher:</strong> {{ course.teacher.username }}</p>
             <p><strong>Description:</strong> {{ course.description }}</p>
-            <p><strong>Schedule:</strong> {{ course.get_schedule_display }}</p>
+            
+            <h5>Schedule</h5>
+            {% if course.schedules.all %}
+                <ul class="list-group mb-3">
+                {% for schedule in course.schedules.all %}
+                    <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No schedules set for this course.</p>
+            {% endif %}
+
             <p><strong>Capacity:</strong> {{ course.capacity }}</p>
             <p><strong>Prerequisites:</strong> {{ course.pre_requisites|default:"None" }}</p>
             <p>
