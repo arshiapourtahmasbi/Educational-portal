@@ -25,6 +25,7 @@
                         <th>Is Admin</th>
                         <th>Is Active</th>
                         <th>Actions</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,6 +59,12 @@
                         </td>
                         <td>
                             <a href="{% url 'edit_user' user.id %}" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
+                        <td>
+                            <form method="post" action="{% url 'admin_delete_account' user.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}

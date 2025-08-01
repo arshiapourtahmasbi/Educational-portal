@@ -172,3 +172,20 @@ def admin_manage_courses(request):
     return render(request, 'admin/manage_courses.html', {
         'courses': courses
     })
+
+@login_required
+@user_passes_test(is_admin)
+def admin_delete_account(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        
+        # Check if user is not a teacher or admin
+        if user.is_teacher or user.is_admin:
+            messages.error(request, 'Cannot delete a teacher or admin account.')
+            return redirect('manage_users')
+        
+        # Delete the user account
+        user.delete()
+        messages.success(request, f'User {user.username} deleted successfully.')
+    
+    return redirect('manage_users')

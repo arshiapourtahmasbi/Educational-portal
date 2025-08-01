@@ -17,4 +17,6 @@ urlpatterns = [
          views.admin_remove_student,
          name='admin_remove_student'),
     path('manage-courses/', views.admin_manage_courses, name='admin_manage_courses'),
+    path('delete-account/<int:user_id>/',
+         views.admin_delete_account, name='admin_delete_account')
 ]

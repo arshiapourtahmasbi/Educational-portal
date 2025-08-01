@@ -73,6 +73,8 @@ nav a:hover {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-decoration: none;
+
 }
 
 .btn-primary {
@@ -85,6 +87,16 @@ nav a:hover {
     text-decoration: none;
     
 }
+
+.btn-secondary {
+    
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    border: none;
+    
+}
+
+
 
 .btn-danger {
     background-color: #dc3545;
@@ -100,7 +112,6 @@ form {
     background: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     max-width: 500px;
     margin: 20px auto;
 }
@@ -150,3 +161,5 @@ form {
     margin-top: 0;
     text-align: center;
 }
+
+a { text-decoration: none; }
