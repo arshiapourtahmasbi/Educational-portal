@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>My Grades</h2>
+    
+    {% if messages %}
+    <div class="messages mb-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if enrollments %}
+        <div class="row">
+            {% for enrollment in enrollments %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ enrollment.course.title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Teacher:</strong> {{ enrollment.course.teacher.username }}</p>
+                        {% if enrollment.grades.all %}
+                            {% with grade=enrollment.grades.first %}
+                            <p>
+                                <strong>Grade:</strong> 
+                                {{ grade.grade|floatformat:2 }}/20 
+                                {% if grade.grade >= 10 %}
+                                    <span class="text-success">(Passed)</span>
+                                {% else %}
+                                    <span class="text-danger">(Failed)</span>
+                                {% endif %}
+                            </p>
+                            {% if grade.comment %}
+                                <p><strong>Comment:</strong> {{ grade.comment }}</p>
+                            {% endif %}
+                            <p><small class="text-muted">Last updated: {{ grade.updated_at|date:"M d, Y" }}</small></p>
+                            {% endwith %}
+                        {% else %}
+                            <p>No grade assigned yet</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You are not enrolled in any courses.</p>
+    {% endif %}
+</div>
+{% endblock %}

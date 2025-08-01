@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, ListView
-from .models import Course
-from .forms import CourseForm
+from .models import Course, Schedule
+from .forms import CourseForm, ScheduleFormSet
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from student.models import Enrollment  
@@ -23,17 +23,26 @@ class CreateCourseView(CreateView):
     form_class = CourseForm
     template_name = 'courses/create_course.html'
 
-    def form_valid(self, form):
-        course = form.save(commit=False)
-        course.teacher = self.request.user
-        course.save()
-        return redirect('course_list')
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
+        if self.request.POST:
+            context['schedule_formset'] = ScheduleFormSet(self.request.POST)
+        else:
+            context['schedule_formset'] = ScheduleFormSet()
         return context
-    
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        schedule_formset = context['schedule_formset']
+        if schedule_formset.is_valid():
+            self.object = form.save(commit=False)
+            self.object.teacher = self.request.user
+            self.object.save()
+            schedule_formset.instance = self.object
+            schedule_formset.save()
+            return redirect('course_list')
+        return self.render_to_response(self.get_context_data(form=form))
+
 @login_required
 def remove_course(request, course_id):
     try:
@@ -73,29 +82,27 @@ def check_schedule_conflict(user, new_course):
     for enrollment in existing_enrollments:
         existing_course = enrollment.course
         
-        if new_course.schedule_type == 'date' and existing_course.schedule_type == 'date':
-            # Check date conflict
-            if existing_course.specific_date == new_course.specific_date:
-                if abs((existing_course.time.hour - new_course.time.hour)) < 1:
-                    return True
-        
-        elif new_course.schedule_type == 'weekday' and existing_course.schedule_type == 'weekday':
-            # Check weekday conflict
-            if existing_course.weekday == new_course.weekday:
-                if abs((existing_course.time.hour - new_course.time.hour)) < 1:
-                    return True
-        
-        elif new_course.schedule_type == 'weekday' and existing_course.schedule_type == 'date':
-            # Check if the specific date falls on the same weekday
-            if existing_course.specific_date is not None and existing_course.specific_date.weekday() == new_course.weekday:
-                if abs((existing_course.time.hour - new_course.time.hour)) < 1:
-                    return True
-        
-        elif new_course.schedule_type == 'date' and existing_course.schedule_type == 'weekday':
-            # Check if the specific date falls on the same weekday
-            if new_course.specific_date.weekday() == existing_course.weekday:
-                if abs((existing_course.time.hour - new_course.time.hour)) < 1:
-                    return True
+        for new_schedule in new_course.schedules.all():
+            for existing_schedule in existing_course.schedules.all(): # type: ignore
+                if new_schedule.schedule_type == 'date' and existing_schedule.schedule_type == 'date':
+                    if existing_schedule.specific_date == new_schedule.specific_date:
+                        if abs((existing_schedule.time.hour - new_schedule.time.hour)) < 1:
+                            return True
+                
+                elif new_schedule.schedule_type == 'weekday' and existing_schedule.schedule_type == 'weekday':
+                    if existing_schedule.weekday == new_schedule.weekday:
+                        if abs((existing_schedule.time.hour - new_schedule.time.hour)) < 1:
+                            return True
+                
+                elif new_schedule.schedule_type == 'weekday' and existing_schedule.schedule_type == 'date':
+                    if existing_schedule.specific_date and existing_schedule.specific_date.weekday() == new_schedule.weekday:
+                        if abs((existing_schedule.time.hour - new_schedule.time.hour)) < 1:
+                            return True
+                
+                elif new_schedule.schedule_type == 'date' and existing_schedule.schedule_type == 'weekday':
+                    if new_schedule.specific_date.weekday() == existing_schedule.weekday:
+                        if abs((existing_schedule.time.hour - new_schedule.time.hour)) < 1:
+                            return True
     
     return False
 
@@ -103,30 +110,49 @@ def check_schedule_conflict(user, new_course):
 def edit_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     
-    # Check if user is the course teacher
     if request.user != course.teacher:
         return render(request, 'courses/error.html', 
                      {'message': 'You do not have permission to edit this course.'})
     
     if request.method == 'POST':
         form = CourseForm(request.POST, instance=course)
-        if form.is_valid():
+        schedule_formset = ScheduleFormSet(request.POST, instance=course)
+        
+        if form.is_valid() and schedule_formset.is_valid():
             form.save()
+            schedule_formset.save()
             messages.success(request, 'Course updated successfully!')
             return redirect('course_list')
     else:
         form = CourseForm(instance=course)
+        schedule_formset = ScheduleFormSet(instance=course)
     
     return render(request, 'courses/edit_course.html', {
         'form': form,
+        'schedule_formset': schedule_formset,
         'course': course
     })
 
 @login_required
 def course_detail(request, course_id):
     course = get_object_or_404(Course, id=course_id)
+    is_enrolled = False
+    if request.user.is_authenticated:
+        is_enrolled = Enrollment.objects.filter(
+            student=request.user,
+            course=course,
+            status='enrolled'
+        ).exists()
+    
     return render(request, 'courses/course_detail.html', {
-        'course': course
+        'course': course,
+        'is_enrolled': is_enrolled
     })
 
 
+@login_required
+def view_created_courses(request):
+    courses = Course.objects.filter(teacher=request.user)
+    return render(request, 'courses/created_courses.html', {
+        'courses': courses
+    })

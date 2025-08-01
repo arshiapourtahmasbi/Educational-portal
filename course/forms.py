@@ -1,12 +1,11 @@
 from django import forms
-from .models import Course
+from django.forms import inlineformset_factory
+from .models import Course, Schedule
 
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ('title', 'description', 'content', 'schedule_type', 
-                 'specific_date', 'weekday', 'time', 'capacity', 
-                 'pre_requisites', 'price')
+        fields = ('title', 'description', 'content', 'capacity', 'pre_requisites', 'price')
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -21,23 +20,6 @@ class CourseForm(forms.ModelForm):
                 'class': 'form-control',
                 'rows': 5,
                 'placeholder': 'Detailed course content, syllabus, and materials'
-            }),
-            'schedule_type': forms.Select(attrs={
-                'class': 'form-control',
-                'id': 'schedule-type'
-            }),
-            'specific_date': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date',
-                'id': 'specific-date'
-            }),
-            'weekday': forms.Select(attrs={
-                'class': 'form-control',
-                'id': 'weekday'
-            }),
-            'time': forms.TimeInput(attrs={
-                'class': 'form-control',
-                'type': 'time'
             }),
             'capacity': forms.NumberInput(attrs={
                 'class': 'form-control',
@@ -56,3 +38,32 @@ class CourseForm(forms.ModelForm):
                 'step': '0.01'
             }),
         }
+
+class ScheduleForm(forms.ModelForm):
+    class Meta:
+        model = Schedule
+        fields = ['schedule_type', 'specific_date', 'weekday', 'time']
+        widgets = {
+            'schedule_type': forms.Select(attrs={
+                'class': 'form-control schedule-type',
+            }),
+            'specific_date': forms.DateInput(attrs={
+                'class': 'form-control specific-date',
+                'type': 'date'
+            }),
+            'weekday': forms.Select(attrs={
+                'class': 'form-control weekday'
+            }),
+            'time': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            })
+        }
+
+ScheduleFormSet = inlineformset_factory(
+    Course, 
+    Schedule,
+    form=ScheduleForm,
+    extra=1,
+    can_delete=True
+)

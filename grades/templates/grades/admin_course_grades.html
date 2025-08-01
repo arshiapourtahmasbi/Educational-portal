@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Admin Grade Management - {{ course.title }}</h2>
+    
+    {% if messages %}
+    <div class="messages mb-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Course Details</h5>
+                <a href="{% url 'course_list' %}" class="btn btn-primary btn-sm">Back to Courses</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <p><strong>Teacher:</strong> {{ course.teacher.username }}</p>
+            <p><strong>Enrolled Students:</strong> {{ enrollments.count }}</p>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Current Grade</th>
+                        <th>Last Updated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in enrollments %}
+                    <tr>
+                        <td>{{ enrollment.student.username }}</td>
+                        <td>
+                            {% if enrollment.grades.all %}
+                                {{ enrollment.grades.first.grade|floatformat:2 }}/20
+                                <button type="button" 
+                                        class="btn btn-secondary btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#gradeModal{{ enrollment.id }}">
+                                    Update
+                                </button>
+                            {% else %}
+                                Not graded
+                                <button type="button" 
+                                        class="btn btn-primary btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#gradeModal{{ enrollment.id }}">
+                                    Grade
+                                </button>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if enrollment.grades.all %}
+                                {{ enrollment.grades.first.updated_at|date:"M d, Y" }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+             
+                            <!-- Grade Modal -->
+                            <div class="modal fade" id="gradeModal{{ enrollment.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                Modify Grade for {{ enrollment.student.username }}
+                                            </h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="enrollment_id" value="{{ enrollment.id }}">
+                                                {{ form.as_p }}
+                                                <button type="submit" class="btn btn-primary">Save Grade</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
