@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Created Courses</h2>
+        <a href="{% url 'create_course' %}" class="btn btn-success">Create New Course</a>
+    </div>
+
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if courses %}
+        <div class="row">
+            {% for course in courses %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ course.title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ course.description|truncatewords:30 }}</p>
+                        
+                        <h6>Schedule:</h6>
+                        <ul class="list-group mb-3">
+                        {% for schedule in course.schedules.all %}
+                            <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
+                        {% empty %}
+                            <li class="list-group-item">No schedules set</li>
+                        {% endfor %}
+                        </ul>
+
+                        <p><strong>Enrolled Students:</strong> 
+                            {{ course.enrollments.filter.count }}/{{ course.capacity }}
+                        </p>
+                        <p><strong>Price:</strong> 
+                            {% if course.price == 0 %}
+                                Free
+                            {% else %}
+                                ${{ course.price }}
+                            {% endif %}
+                        </p>
+
+                        <div class="btn-group">
+                            <a href="{% url 'enrolled_students' course.id %}" 
+                               class="btn btn-primary btn-sm">View Students</a>
+                            <a href="{% url 'teacher_course_grades' course.id %}" 
+                               class="btn btn-primary btn-sm">Manage Grades</a>
+                            <a href="{% url 'edit_course' course.id %}" 
+                               class="btn btn-primary btn-sm">Edit</a>
+ 
+                        </div>
+
+                        <!-- Delete Confirmation Modal -->
+                        <div class="modal fade" id="deleteModal{{ course.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Course deletion</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                    
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="post" action="{% url 'remove_course' course.id %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Remove Course</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p>You haven't created any courses yet.</p>
+            <a href="{% url 'create_course' %}" class="btn btn-primary">Create Your First Course</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -83,7 +83,7 @@ def check_schedule_conflict(user, new_course):
         existing_course = enrollment.course
         
         for new_schedule in new_course.schedules.all():
-            for existing_schedule in existing_course.schedules.all():
+            for existing_schedule in existing_course.schedules.all(): # type: ignore
                 if new_schedule.schedule_type == 'date' and existing_schedule.schedule_type == 'date':
                     if existing_schedule.specific_date == new_schedule.specific_date:
                         if abs((existing_schedule.time.hour - new_schedule.time.hour)) < 1:
@@ -150,3 +150,9 @@ def course_detail(request, course_id):
     })
 
 
+@login_required
+def view_created_courses(request):
+    courses = Course.objects.filter(teacher=request.user)
+    return render(request, 'courses/created_courses.html', {
+        'courses': courses
+    })

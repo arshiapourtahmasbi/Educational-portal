@@ -8,8 +8,14 @@
         <div class="card-body">
             <h5 class="card-title">Course Details</h5>
             <p class="card-text"><strong>Description:</strong> {{ course.description }}</p>
-            <p class="card-text"><strong>Date:</strong> {{ course.date }}</p>
-            <p class="card-text"><strong>Time:</strong> {{ course.time }}</p>
+            <p class="card-text"><strong>Schedule:</strong></p>
+            <ul class="list-group mb-3">
+                {% for schedule in course.schedules.all %}
+                    <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
+                {% empty %}
+                    <li class="list-group-item">No schedules available</li>
+                {% endfor %}
+            </ul>
             <p class="card-text"><strong>Available Seats:</strong> {{ course.capacity }}</p>
             <p class="card-text">
                 <strong>Price:</strong> 
