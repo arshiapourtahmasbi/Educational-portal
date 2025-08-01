@@ -32,6 +32,9 @@
         <p>Manage your courses:</p>
         <button class="btn btn-secondary"><a href="{% url 'course_list' %}">Courses</a></button>
         <button class="btn btn-secondary"><a href="{% url 'my_courses' %}">My Courses</a></button>
+        <button class="btn btn-secondary"><a href="{% url 'student_grades' %}">My Grades</a></button>
+
+   
         
         {% if user.is_teacher %}
         <p>As a teacher, you can:</p>
@@ -41,7 +44,7 @@
         {% if user.is_admin %}
         <p>Admin Options:</p>
         <button class="btn btn-danger"><a href="{% url 'manage_users' %}">Manage Users</a></button>
-        <button class="btn btn-danger"><a href="{% url 'my_courses' %}">Manage Courses</a></button>
+        <button class="btn btn-danger"><a href="{% url 'admin_manage_courses' %}">Manage Courses</a></button>
         {% endif %}
     </div>
     {% endblock %}

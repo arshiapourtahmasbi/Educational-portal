@@ -164,3 +164,11 @@ def admin_remove_student(request, course_id, student_id):
         )
     
     return redirect('manage_course_enrollments', course_id=course_id)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_manage_courses(request):
+    courses = Course.objects.all().select_related('teacher')
+    return render(request, 'admin/manage_courses.html', {
+        'courses': courses
+    })

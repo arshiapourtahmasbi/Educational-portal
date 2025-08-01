@@ -36,6 +36,14 @@
             {% if user.is_authenticated and not user.is_teacher and not user.is_admin %}
                 <a href="{% url 'add_to_cart' course.id %}" class="btn btn-primary">Add to Cart (${{ course.price }})</a>
             {% endif %}
+
+            {% if user.is_teacher and user == course.teacher %}
+                <a href="{% url 'teacher_course_grades' course.id %}" class="btn btn-info">View Grades</a>
+            {% elif user.is_admin %}
+                <a href="{% url 'admin_course_grades' course.id %}" class="btn btn-info">Manage Grades</a>
+            {% elif is_enrolled %}
+                <a href="{% url 'student_grades' %}" class="btn btn-info">View My Grades</a>
+            {% endif %}
         </div>
     </div>
 </div>

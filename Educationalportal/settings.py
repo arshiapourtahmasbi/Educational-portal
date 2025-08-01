@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'student',  # App for student management
     'adminportal',  # App for admin functionalities
     'checkout',  # App for handling checkout processes
+    'grades',  # App for managing student grades
 ]
 
 AUTH_USER_MODEL = 'portal.User'

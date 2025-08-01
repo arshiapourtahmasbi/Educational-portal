@@ -136,8 +136,17 @@ def edit_course(request, course_id):
 @login_required
 def course_detail(request, course_id):
     course = get_object_or_404(Course, id=course_id)
+    is_enrolled = False
+    if request.user.is_authenticated:
+        is_enrolled = Enrollment.objects.filter(
+            student=request.user,
+            course=course,
+            status='enrolled'
+        ).exists()
+    
     return render(request, 'courses/course_detail.html', {
-        'course': course
+        'course': course,
+        'is_enrolled': is_enrolled
     })
 
 
