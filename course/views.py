@@ -122,4 +122,11 @@ def edit_course(request, course_id):
         'course': course
     })
 
+@login_required
+def course_detail(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    return render(request, 'courses/course_detail.html', {
+        'course': course
+    })
+
 

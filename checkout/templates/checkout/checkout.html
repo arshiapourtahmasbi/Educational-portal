@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Checkout</h2>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Order Summary</h4>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in cart.courses.all %}
+                    <tr>
+                        <td>{{ course.title }}</td>
+                        <td>${{ course.price }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td><strong>${{ total_price }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h4>Payment Options</h4>
+            <form method="post" action="{% url 'process_payment' %}">
+                {% csrf_token %}
+                <!-- Debug payment buttons -->
+                <button type="submit" name="payment_status" value="success" class="btn btn-success">
+                    Simulate Successful Payment
+                </button>
+                <button type="submit" name="payment_status" value="failed" class="btn btn-danger">
+                    Simulate Failed Payment
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

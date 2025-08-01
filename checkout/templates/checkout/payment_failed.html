@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container text-center">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="text-danger">Payment Failed</h2>
+            <p>Sorry, your payment could not be processed. Please try again.</p>
+            <div class="mt-4">
+                <a href="{% url 'checkout' %}" class="btn btn-primary">Try Again</a>
+                <a href="{% url 'view_cart' %}" class="btn btn-secondary">Return to Cart</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

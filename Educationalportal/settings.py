@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'course',  # App for course management
     'student',  # App for student management
     'adminportal',  # App for admin functionalities
-    'django_extensions',
+    'checkout',  # App for handling checkout processes
 ]
 
 AUTH_USER_MODEL = 'portal.User'
