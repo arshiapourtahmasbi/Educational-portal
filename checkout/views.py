@@ -6,6 +6,8 @@ from .models import Payment, Cart
 from student.models import Enrollment
 from course.views import check_schedule_conflict
 from decimal import Decimal
+from course.models import Course
+
 
 @login_required
 def add_to_cart(request, course_id):
@@ -20,8 +22,32 @@ def add_to_cart(request, course_id):
         messages.error(request, 'This course is full.')
         return redirect('course_list')
     
+    # Check for schedule conflicts with enrolled courses
+    if check_schedule_conflict(request.user, course):
+        messages.error(request, f'Schedule conflict detected with your enrolled courses.')
+        return redirect('course_list')
+    
     # Get or create cart
     cart, created = Cart.objects.get_or_create(student=request.user)
+    
+    # Check for conflicts with courses already in cart
+    for cart_course in cart.courses.all():
+        for new_schedule in course.schedules.all(): # pyright: ignore[reportAttributeAccessIssue]
+            for existing_schedule in cart_course.schedules.all():
+                # Check date schedules
+                if new_schedule.schedule_type == 'date' and existing_schedule.schedule_type == 'date':
+                    if existing_schedule.specific_date == new_schedule.specific_date:
+                        if abs(existing_schedule.time.hour - new_schedule.time.hour) < 1:
+                            messages.error(request, f'Schedule conflict detected with {cart_course.title} in your cart.')
+                            return redirect('view_cart')
+                
+                # Check weekday schedules
+                elif new_schedule.schedule_type == 'weekday' and existing_schedule.schedule_type == 'weekday':
+                    if existing_schedule.weekday == new_schedule.weekday:
+                        if abs(existing_schedule.time.hour - new_schedule.time.hour) < 1:
+                            messages.error(request, f'Schedule conflict detected with {cart_course.title} in your cart.')
+                            return redirect('view_cart')
+    
     cart.courses.add(course)
     messages.success(request, f'{course.title} added to cart.')
     return redirect('view_cart')
