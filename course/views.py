@@ -47,7 +47,7 @@ class CreateCourseView(CreateView):
 def remove_course(request, course_id):
     try:
         course = Course.objects.get(id=course_id)
-        if request.user == course.teacher:
+        if request.user == course.teacher or request.user.is_admin:
             course.delete()
             return redirect('course_list')
         else:

@@ -16,6 +16,10 @@ def add_to_cart(request, course_id):
         messages.warning(request, 'You are already enrolled in this course.')
         return redirect('my_courses')
     
+    if course.capacity <= 0:
+        messages.error(request, 'This course is full.')
+        return redirect('course_list')
+    
     # Get or create cart
     cart, created = Cart.objects.get_or_create(student=request.user)
     cart.courses.add(course)

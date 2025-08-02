@@ -37,9 +37,12 @@ def login_view(request):
             if user is not None: 
                 if not user.is_active:
                     messages.error(request, 'Your account is inactive.')
-                    return redirect('login')
-            login(request, user)
-            return redirect('home')
+                    return render(request, 'login.html', {'form': form})
+                login(request, user)
+                return redirect('home') 
+            else:
+                messages.error(request, 'Invalid username or password.')
+                return render(request, 'login.html', {'form': form})
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
