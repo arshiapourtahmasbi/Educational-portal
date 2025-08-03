@@ -26,7 +26,7 @@
                         <p><strong>Teacher:</strong> {{ enrollment.course.teacher.username }}</p>
                         <p><strong>Description:</strong> {{ enrollment.course.description }}</p>
                         
-                        <h6>Schedule:</h6>
+                        <strong>Schedule:</strong>
                         <ul class="list-group mb-3">
                         {% for schedule in enrollment.course.schedules.all %}
                             <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
@@ -34,11 +34,18 @@
                         </ul>
                         
                         <p><strong>Enrollment Date:</strong> {{ enrollment.enrollment_date|date:"M d, Y" }}</p>
-                        
-                        <form method="post" action="{% url 'drop_course' enrollment.course.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Drop Course</button>
-                        </form>
+                        <p><strong>Status:</strong> {{ enrollment.get_status_display }}</p>
+                        <div  class="btn-group">
+
+                            
+                            <a href="{% url 'view_course_content' enrollment.course.id %}" class="btn btn-primary">View Content</a>
+
+                            
+                            <form method="post" action="{% url 'drop_course' enrollment.course.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Drop Course</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

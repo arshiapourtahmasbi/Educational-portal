@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">{{ course.title }}</h1>
+    <div class="card">
+        <div class="card-header">
+            Course Content
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ course.content|linebreaks }}</p>
+        </div>
+    </div>
+    <a href="{% url 'my_courses' %}" class="btn btn-primary mt-3">Back to My Courses</a>
+</div>
+{% endblock %}

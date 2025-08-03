@@ -66,3 +66,18 @@ def drop_course(request, course_id):
     
     messages.success(request, f'Successfully dropped {enrollment.course.title}')
     return redirect('my_courses')
+
+@login_required
+def view_course_content(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Check if the user is enrolled in the course
+    if not Enrollment.objects.filter(
+        student=request.user, 
+        course=course, 
+        status='enrolled'
+    ).exists():
+        messages.error(request, 'You are not enrolled in this course.')
+        return redirect('my_courses')
+    
+    return render(request, 'student/course_content.html', {'course': course})
