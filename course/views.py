@@ -12,6 +12,9 @@ class CourseListView(ListView):
     context_object_name = 'courses'
     template_name = 'courses/course_list.html'
 
+    def get_queryset(self):
+        return Course.objects.order_by('-created_at')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user

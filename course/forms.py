@@ -6,6 +6,9 @@ class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = ('title', 'description', 'content', 'capacity', 'pre_requisites', 'price')
+        labels = {
+            'pre_requisites': 'Prerequisites',
+        }
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -65,6 +68,5 @@ ScheduleFormSet = inlineformset_factory(
     Course, 
     Schedule,
     form=ScheduleForm,
-    extra=1,
     can_delete=True
 )

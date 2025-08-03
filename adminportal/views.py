@@ -94,6 +94,11 @@ def admin_add_student(request, course_id, student_id):
     if request.method == 'POST':
         course = get_object_or_404(Course, id=course_id)
         student = get_object_or_404(User, id=student_id)
+
+        # Check if student is a teacher or admin
+        if student.is_teacher or student.is_admin:
+            messages.error(request, 'Cannot enroll a teacher or admin in a course.')
+            return redirect('manage_course_enrollments', course_id=course_id)
         
         # Check if course has capacity
         if course.capacity <= 0:
