@@ -61,7 +61,7 @@ class Course(models.Model):
         max_digits=10, 
         decimal_places=2,
         default=Decimal('0.00'),
-        help_text="Course price in USD"
+        
     )
 
     def __str__(self):
