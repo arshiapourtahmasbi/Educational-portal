@@ -6,6 +6,7 @@ from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import EditProfileForm
+from .models import User
 from django.contrib import messages
 
 
@@ -33,16 +34,21 @@ def login_view(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None: 
-                if not user.is_active:
-                    messages.error(request, 'Your account is inactive.')
-                    return render(request, 'login.html', {'form': form})
-                login(request, user)
-                return redirect('home') 
-            else:
+            
+            try:
+                user = User.objects.get(username=username)
+                if user.check_password(password):
+                    if user.is_active:
+                        login(request, user)
+                        return redirect('home')
+                    else:
+                        messages.error(request, 'Your account is inactive.')
+                else:
+                    messages.error(request, 'Invalid username or password.')
+            except User.DoesNotExist:
                 messages.error(request, 'Invalid username or password.')
-                return render(request, 'login.html', {'form': form})
+            
+            return render(request, 'login.html', {'form': form})
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})

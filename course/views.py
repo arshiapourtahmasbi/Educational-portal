@@ -49,6 +49,8 @@ def remove_course(request, course_id):
         course = Course.objects.get(id=course_id)
         if request.user == course.teacher or request.user.is_admin:
             course.delete()
+            if request.user.is_admin:
+                return redirect('admin_manage_courses')
             return redirect('course_list')
         else:
             return render(request, 'courses/error.html', {'message': 'You do not have permission to delete this course.'})
