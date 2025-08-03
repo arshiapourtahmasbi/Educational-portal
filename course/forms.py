@@ -27,6 +27,7 @@ class CourseForm(forms.ModelForm):
                 'type': 'number'
             }),
             'pre_requisites': forms.Textarea(attrs={
+                
                 'class': 'form-control',
                 'rows': 2,
                 'placeholder': 'Prerequisites'
