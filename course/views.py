@@ -115,9 +115,10 @@ def check_schedule_conflict(user, new_course):
 def edit_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     
-    if request.user != course.teacher:
-        return render(request, 'courses/error.html', 
-                     {'message': 'You do not have permission to edit this course.'})
+    if request.user != course.teacher or not request.user.is_admin:
+        messages.error(request, 'You do not have permission to edit this course.')
+        return redirect('course_list')
+        
     
     if request.method == 'POST':
         form = CourseForm(request.POST, instance=course)

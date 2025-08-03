@@ -48,6 +48,7 @@ class ScheduleForm(forms.ModelForm):
         model = Schedule
         fields = ['schedule_type', 'specific_date', 'weekday', 'time']
         widgets = {
+            'id': forms.HiddenInput(),
             'schedule_type': forms.Select(attrs={
                 'class': 'form-control schedule-type',
             }),
@@ -68,5 +69,7 @@ ScheduleFormSet = inlineformset_factory(
     Course, 
     Schedule,
     form=ScheduleForm,
+    extra=1,
     can_delete=True
 )
+
