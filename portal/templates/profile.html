@@ -17,9 +17,9 @@
     <div class="current-info mb-4">
         <p>Username: {{ user.username }}</p>
         <p>Email: {{ user.email }}</p>
-        <p>First Name: {{ user.first_name }}</p>
+        <p>First Name: {% if user.first_name %} {{ user.first_name }} {% else %} Not provided {% endif %}</p>
 
-        <p>Last Name: {{ user.last_name }}</p>
+        <p>Last Name: {% if user.last_name %} {{ user.last_name }} {% else %} Not provided {% endif %}</p>
 
         <p>Is Teacher: {{ user.is_teacher|yesno:"Yes,No" }}</p>
         <p>Is Admin: {{ user.is_admin|yesno:"Yes,No" }}</p>

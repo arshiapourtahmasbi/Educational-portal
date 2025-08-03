@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <p class="card-text">{{ course.description|truncatewords:30 }}</p>
                         
-                        <h6>Schedule:</h6>
+                        <strong>Schedule:</strong>
                         <ul class="list-group mb-3">
                         {% for schedule in course.schedules.all %}
                             <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
@@ -59,7 +59,7 @@
  
                         </div>
 
-                        <!-- Delete Confirmation Modal -->
+                        <!-- Delete -->
                         <div class="modal fade" id="deleteModal{{ course.id }}" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">

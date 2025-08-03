@@ -11,7 +11,7 @@
             <p><strong>Teacher:</strong> {{ course.teacher.username }}</p>
             <p><strong>Description:</strong> {{ course.description }}</p>
             
-            <h5>Schedule</h5>
+            <strong>Schedule:</strong>
             {% if course.schedules.all %}
                 <ul class="list-group mb-3">
                 {% for schedule in course.schedules.all %}
@@ -38,11 +38,11 @@
             {% endif %}
 
             {% if user.is_teacher and user == course.teacher %}
-                <a href="{% url 'teacher_course_grades' course.id %}" class="btn btn-info">View Grades</a>
+                <a href="{% url 'teacher_course_grades' course.id %}" class="btn btn-primary">View Grades</a>
             {% elif user.is_admin %}
-                <a href="{% url 'admin_course_grades' course.id %}" class="btn btn-info">Manage Grades</a>
+                <a href="{% url 'admin_course_grades' course.id %}" class="btn btn-primary">Manage Grades</a>
             {% elif is_enrolled %}
-                <a href="{% url 'student_grades' %}" class="btn btn-info">View My Grades</a>
+                <a href="{% url 'student_grades' %}" class="btn btn-primary">View My Grades</a>
             {% endif %}
         </div>
     </div>

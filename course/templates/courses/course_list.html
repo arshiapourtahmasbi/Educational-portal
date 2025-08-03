@@ -23,10 +23,13 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Taught by: {{ course.teacher.username }}</h6>
+                    <strong class="card-subtitle mb-2 text-muted">Taught by: {{ course.teacher.username }}</strong>
+                    <p class="card-text"><strong>Description:</strong> </p>
+                    
+               
                     <p class="card-text">{{ course.description|truncatewords:30 }}</p>
                     
-                    <h6>Schedule:</h6>
+                    <strong>Schedule:</strong>
                     <ul class="list-group mb-3">
                     {% for schedule in course.schedules.all %}
                         <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
