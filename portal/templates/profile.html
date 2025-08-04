@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mb-4">Current profile</h1>
+    <h1 class="login-css">Current profile</h1>
     
     {% if messages %}
     <div class="messages">
@@ -14,7 +14,7 @@
     </div>
     {% endif %}
 
-    <div class="current-info mb-4">
+    <div class="current-info login-css">
         <p>Username: {{ user.username }}</p>
         <p>Email: {{ user.email }}</p>
         <p>First Name: {% if user.first_name %} {{ user.first_name }} {% else %} Not provided {% endif %}</p>

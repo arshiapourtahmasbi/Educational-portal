@@ -5,9 +5,10 @@ from course.models import Course
 from .models import Enrollment
 from course.views import check_schedule_conflict
 
+# Enroll a student in a course
 @login_required
 def enroll_course(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
+    course = get_object_or_404(Course, id=course_id) # Get the course by ID
     
     # Check if student is already enrolled
     if Enrollment.objects.filter(
@@ -40,6 +41,7 @@ def enroll_course(request, course_id):
     messages.success(request, f'Successfully enrolled in {course.title}')
     return redirect('my_courses')
 
+# View a student's enrolled courses
 @login_required
 def my_courses(request):
     enrollments = Enrollment.objects.filter(
@@ -48,6 +50,7 @@ def my_courses(request):
     ).select_related('course')
     return render(request, 'student/my_courses.html', {'enrollments': enrollments})
 
+# Drop a course
 @login_required
 def drop_course(request, course_id):
     enrollment = get_object_or_404(
@@ -67,6 +70,7 @@ def drop_course(request, course_id):
     messages.success(request, f'Successfully dropped {enrollment.course.title}')
     return redirect('my_courses')
 
+# View course content for enrolled students
 @login_required
 def view_course_content(request, course_id):
     course = get_object_or_404(Course, id=course_id)

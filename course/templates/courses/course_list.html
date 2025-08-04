@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    <h1 class="mb-4">Available Courses</h1>
+    <h1>Available Courses</h1>
     
     {% if messages %}
-    <div class="messages mb-4">
+    <div class="messages">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
             {{ message }}
@@ -15,22 +15,22 @@
     
     <div class="row">
         {% for course in courses %}
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
+        <div class="col">
+            <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">
+                    <h5 class="card-title">
                         <a href="{% url 'course_detail' course.id %}">{{ course.title }}</a>
                     </h5>
                 </div>
                 <div class="card-body">
-                    <strong class="card-subtitle mb-2 text-muted">Taught by: {{ course.teacher.username }}</strong>
+                    <strong class="card-subtitle text-muted">Taught by: {{ course.teacher.username }}</strong>
                     <p class="card-text"><strong>Description:</strong> </p>
                     
                
                     <p class="card-text">{{ course.description|truncatewords:30 }}</p>
                     
                     <strong>Schedule:</strong>
-                    <ul class="list-group mb-3">
+                    <ul class="list-group">
                     {% for schedule in course.schedules.all %}
                         <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
                     {% endfor %}

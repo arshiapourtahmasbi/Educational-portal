@@ -13,7 +13,7 @@
             
             <strong>Schedule:</strong>
             {% if course.schedules.all %}
-                <ul class="list-group mb-3">
+                <ul class="list-group">
                 {% for schedule in course.schedules.all %}
                     <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
                 {% endfor %}

@@ -2,11 +2,12 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from student.models import Enrollment
 
+# Model to represent grades for student enrollments in courses
 class Grade(models.Model):
     enrollment = models.ForeignKey(
         Enrollment, 
         on_delete=models.CASCADE,
-        related_name='grades'
+        related_name='grades' 
     )
     grade = models.DecimalField(
         max_digits=4, 
@@ -17,12 +18,14 @@ class Grade(models.Model):
         ],
         help_text="Grade must be between 0 and 20"
     )
-    comment = models.TextField(blank=True, null=True)
+    comment = models.TextField(blank=True, null=True) # Optional comment for the grade
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+# String representation of the Grade model
     def __str__(self):
         return f"{self.enrollment.student.username} - {self.enrollment.course.title} - {self.grade}"
 
+    
     class Meta:
-        unique_together = ['enrollment']
+        unique_together = ['enrollment'] # Ensure that each enrollment can have only one grade

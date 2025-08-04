@@ -18,10 +18,10 @@
     {% if enrollments %}
         <div class="row">
             {% for enrollment in enrollments %}
-            <div class="col-md-6 mb-4">
+            <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">{{ enrollment.course.title }}</h5>
+                        <h5>{{ enrollment.course.title }}</h5>
                     </div>
                     <div class="card-body">
                         <p><strong>Teacher:</strong> {{ enrollment.course.teacher.username }}</p>

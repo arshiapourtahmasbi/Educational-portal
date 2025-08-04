@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="mb-4">Edit User: {{ user_to_edit.username }}</h2>
+    <h2>Edit User: {{ user_to_edit.username }}</h2>
 
     {% if messages %}
     <div class="messages">
@@ -19,7 +19,7 @@
             <form method="post">
                 {% csrf_token %}
                 
-                <div class="mb-3">
+                <div>
                     <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
                     {{ form.username }}
                     {% if form.username.errors %}
@@ -29,7 +29,7 @@
                     {% endif %}
                 </div>
 
-                <div class="mb-3">
+                <div>
                     <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
                     {{ form.email }}
                     {% if form.email.errors %}
@@ -39,7 +39,7 @@
                     {% endif %}
                 </div>
 
-                <div class="mb-3">
+                <div>
                     <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
                     {{ form.first_name }}
                     {% if form.first_name.errors %}
@@ -49,7 +49,7 @@
                     {% endif %}
                 </div>
 
-                <div class="mb-3">
+                <div>
                     <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
                     {{ form.last_name }}
                     {% if form.last_name.errors %}
@@ -59,21 +59,21 @@
                     {% endif %}
                 </div>
 
-                <div class="mb-3 form-check">
+                <div>
                     {{ form.is_teacher }}
                     <label class="form-check-label" for="{{ form.is_teacher.id_for_label }}">
                         Teacher Status
                     </label>
                 </div>
 
-                <div class="mb-3 form-check">
+                <div>
                     {{ form.is_admin }}
                     <label class="form-check-label" for="{{ form.is_admin.id_for_label }}">
                         Admin Status
                     </label>
                 </div>
 
-                <div class="mb-3 form-check">
+                <div>
                     {{ form.is_active }}
                     <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
                         Active Status
@@ -88,7 +88,7 @@
         </div>
     </div>
 
-    <div class="mt-3">
+    <div>
         <p class="text-muted">Last login: {{ user_to_edit.last_login|default:"Never" }}</p>
         <p class="text-muted">Date joined: {{ user_to_edit.date_joined }}</p>
     </div>

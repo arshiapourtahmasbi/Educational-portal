@@ -10,10 +10,11 @@ from .models import User
 from django.contrib import messages
 
 
-
+# Home view
 def home(request):
     return render(request, 'home.html')
 
+# Signup view
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -25,9 +26,10 @@ def signup(request):
             login(request, user)
             return redirect('home')
     else:
-        form = SignUpForm()
+        form = SignUpForm() 
     return render(request, 'signup.html', {'form': form})
 
+# Login and logout views
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -57,6 +59,7 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+# Profile view and edit
 @login_required
 def profile(request):
     if request.method == 'POST':

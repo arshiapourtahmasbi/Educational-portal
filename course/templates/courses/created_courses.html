@@ -3,13 +3,13 @@
 
 {% block content %}
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center">
         <h2>My Created Courses</h2>
         <a href="{% url 'create_course' %}" class="btn btn-success">Create New Course</a>
     </div>
 
     {% if messages %}
-    <div class="messages mb-4">
+    <div class="messages">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
             {{ message }}
@@ -21,8 +21,8 @@
     {% if courses %}
         <div class="row">
             {% for course in courses %}
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
+            <div class="col">
+                <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">{{ course.title }}</h5>
                     </div>
@@ -30,7 +30,7 @@
                         <p class="card-text">{{ course.description|truncatewords:30 }}</p>
                         
                         <strong>Schedule:</strong>
-                        <ul class="list-group mb-3">
+                        <ul class="list-group">
                         {% for schedule in course.schedules.all %}
                             <li class="list-group-item">{{ schedule.get_schedule_display }}</li>
                         {% empty %}
@@ -55,7 +55,7 @@
                             <a href="{% url 'teacher_course_grades' course.id %}" 
                                class="btn btn-primary btn-sm">Manage Grades</a>
                             <a href="{% url 'edit_course' course.id %}" 
-                               class="btn btn-primary btn-sm">Edit</a>
+                               class="btn btn-primary btn-sm">Edit Course</a>
  
                         </div>
 

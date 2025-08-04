@@ -148,7 +148,7 @@ form {
     border: 1px solid #f5c6cb;
 }
 
-/* class current-info mb-4 */
+/* miscellaneous */
 
 .current-info {
     background: #e9ecef;
@@ -157,7 +157,7 @@ form {
     margin-bottom: 20px;
 }
 
-.mb-4 {
+.login-css {
     margin-top: 0;
     text-align: center;
 }

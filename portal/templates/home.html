@@ -38,8 +38,8 @@
         
         {% if user.is_teacher %}
         <p>As a teacher, you can:</p>
-        <button class="btn btn-success"><a href="{% url 'create_course' %}">Create Course</a></button>
-        <button class="btn btn-success"><a href="{% url 'created_courses' %}">View Created Courses</a></button>
+        <button class="btn btn-primary"><a href="{% url 'create_course' %}">Create Course</a></button>
+        <button class="btn btn-primary"><a href="{% url 'created_courses' %}">View Created Courses</a></button>
         {% endif %}
         {% endif %}
         {% if user.is_admin %}

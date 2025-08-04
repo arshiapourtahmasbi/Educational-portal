@@ -1,6 +1,8 @@
 from django import forms
 from portal.models import User
 
+# Admin User Edit Form
+# This form is used to edit user details in the admin portal.
 class AdminUserEditForm(forms.ModelForm):
     class Meta:
         model = User

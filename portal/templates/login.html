@@ -7,7 +7,7 @@
   <h2>Log in</h2>
 
   {% if messages %}
-  <div class="messages mb-4">
+  <div class="messages login-css">
     {% for message in messages %}
     <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
       {{ message }}

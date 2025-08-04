@@ -9,15 +9,17 @@ from decimal import Decimal
 from course.models import Course
 
 
+# Checkout views for managing the shopping cart and processing payments
 @login_required
 def add_to_cart(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
+    course = get_object_or_404(Course, id=course_id) 
     
     # Check if user is already enrolled
     if Enrollment.objects.filter(student=request.user, course=course, status='enrolled').exists():
         messages.warning(request, 'You are already enrolled in this course.')
         return redirect('my_courses')
     
+    # Check if course is full
     if course.capacity <= 0:
         messages.error(request, 'This course is full.')
         return redirect('course_list')
@@ -52,24 +54,27 @@ def add_to_cart(request, course_id):
     messages.success(request, f'{course.title} added to cart.')
     return redirect('view_cart')
 
+# Remove a course from the cart
 @login_required
 def remove_from_cart(request, course_id):
-    cart = Cart.objects.filter(student=request.user).first()
+    cart = Cart.objects.filter(student=request.user).first() 
     if cart:
         course = get_object_or_404(Course, id=course_id)
         cart.courses.remove(course)
         messages.success(request, f'{course.title} removed from cart.')
     return redirect('view_cart')
 
+# View the shopping cart
 @login_required
 def view_cart(request):
     cart = Cart.objects.filter(student=request.user).first()
     context = {
         'cart': cart,
-        'total_price': cart.total_price() if cart else Decimal('0.00')
+        'total_price': cart.total_price() if cart else Decimal('0.00') # Ensure total_price is calculated correctly
     }
     return render(request, 'checkout/cart.html', context)
 
+# Checkout view to process the cart and handle payment
 @login_required
 def checkout(request):
     cart = Cart.objects.filter(student=request.user).first()
@@ -89,10 +94,11 @@ def checkout(request):
     }
     return render(request, 'checkout/checkout.html', context)
 
+# Process payment and enroll in courses
 @login_required
 def process_payment(request):
     if request.method == 'POST':
-        cart = Cart.objects.filter(student=request.user).first()
+        cart = Cart.objects.filter(student=request.user).first() # Ensure cart exists
         if not cart or cart.courses.count() == 0:
             messages.error(request, 'Cart is empty')
             return redirect('course_list')
@@ -131,7 +137,7 @@ def process_payment(request):
             
             # Clear cart
             cart.delete()
-            messages.success(request, 'Payment successful! You are now enrolled in the selected courses.')
+            messages.success(request, 'Payment successful! You are now enrolled in the selected courses.') 
             return redirect('payment_success')
         else:
             messages.error(request, 'Payment failed. Please try again.')
@@ -139,10 +145,12 @@ def process_payment(request):
     
     return redirect('checkout')
 
+# View for successful payment
 @login_required
 def payment_success(request):
     return render(request, 'checkout/payment_success.html')
 
+# View for failed payment
 @login_required
 def payment_failed(request):
     return render(request, 'checkout/payment_failed.html')

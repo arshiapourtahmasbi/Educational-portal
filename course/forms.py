@@ -2,6 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory
 from .models import Course, Schedule
 
+# Form for creating and editing courses
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
@@ -9,6 +10,7 @@ class CourseForm(forms.ModelForm):
         labels = {
             'pre_requisites': 'Prerequisites',
         }
+        # Customizing the form fields with CSS classes and placeholders
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -43,6 +45,7 @@ class CourseForm(forms.ModelForm):
             }),
         }
 
+# Form for creating and editing course schedules
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
@@ -65,6 +68,7 @@ class ScheduleForm(forms.ModelForm):
             })
         }
 
+# Inline formset for managing multiple schedules for a course
 ScheduleFormSet = inlineformset_factory(
     Course, 
     Schedule,
