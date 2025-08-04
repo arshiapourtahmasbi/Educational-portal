@@ -1,19 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const addScheduleBtn = document.getElementById('add-schedule');
-    const scheduleContainer = document.getElementById('schedule-forms');
-    let formCount = document.querySelectorAll('.schedule-form').length;
+    const addScheduleBtn = document.getElementById('add-schedule'); // Button to add new schedule form
+    const scheduleContainer = document.getElementById('schedule-forms'); // Container for schedule forms
+    let formCount = document.querySelectorAll('.schedule-form').length; // Number of existing forms
     
-    // Store the template form HTML for later use
-    const templateForm = document.querySelector('.schedule-form').cloneNode(true);
-    
+    // Function to update schedule fields based on selected type
     function updateScheduleFields(form) {
-        const scheduleType = form.querySelector('.schedule-type');
-        const specificDate = form.querySelector('.specific-date').parentElement;
-        const weekday = form.querySelector('.weekday').parentElement;
+        const scheduleType = form.querySelector('.schedule-type'); // Dropdown to select schedule type
+        const specificDate = form.querySelector('.specific-date').parentElement; // Date input for specific date
+        const weekday = form.querySelector('.weekday').parentElement; // Dropdown for weekday
         
         if (scheduleType.value === 'date') {
             specificDate.style.display = 'block';
-            weekday.style.display = 'none';
+            weekday.style.display = 'none'; 
         } else {
             specificDate.style.display = 'none';
             weekday.style.display = 'block';
@@ -22,38 +20,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize existing forms
     document.querySelectorAll('.schedule-form').forEach(form => {
-        updateScheduleFields(form);
+        updateScheduleFields(form); // Set initial visibility based on type
         form.querySelector('.schedule-type').addEventListener('change', function() {
-            updateScheduleFields(form);
+            updateScheduleFields(form); // Update visibility based on type
         });
     });
     
     if (addScheduleBtn) {
         addScheduleBtn.addEventListener('click', function() {
-            // Create new form from stored template
-            const newForm = templateForm.cloneNode(true);
-            
-            // Clear any values that might have been in the template
-            newForm.querySelectorAll('input[type="text"], input[type="date"], input[type="time"], select').forEach(input => {
-                input.value = '';
-            });
-            
-            // Update form index
-            newForm.innerHTML = newForm.innerHTML.replace(
-                new RegExp('schedules-\\d+-', 'g'), 
-                `schedules-${formCount}-`
-            );
-            
-            // Add the new form to the container
-            scheduleContainer.appendChild(newForm);
+            const empty_form = document.querySelector('.schedule-form').cloneNode(true); // Clone the empty form
+            empty_form.innerHTML = empty_form.innerHTML.replace(/__prefix__/g, formCount); // Replace prefix for new form
+            scheduleContainer.appendChild(empty_form); // Append the new form to the container
             
             // Update the management form
-            document.getElementById('id_schedules-TOTAL_FORMS').value = ++formCount;
+            document.getElementById('id_schedules-TOTAL_FORMS').value = ++formCount; // Increment total forms count
             
             // Add event listener to new form
-            updateScheduleFields(newForm);
-            newForm.querySelector('.schedule-type').addEventListener('change', function() {
-                updateScheduleFields(newForm);
+            updateScheduleFields(empty_form); // Set initial visibility based on type
+            empty_form.querySelector('.schedule-type').addEventListener('change', function() {
+                updateScheduleFields(empty_form); // Update visibility based on type
             });
         });
     }
@@ -61,12 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle delete buttons
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('delete-schedule')) {
-            e.preventDefault();
-            const scheduleForm = e.target.closest('.schedule-form');
-            scheduleForm.style.display = 'none';
-            const deleteInput = scheduleForm.querySelector('input[name$="-DELETE"]');
-            if (deleteInput) {
-                deleteInput.value = 'on';
+            e.preventDefault(); // Prevent form submission
+            const scheduleForm = e.target.closest('.schedule-form'); // Get the parent form
+            scheduleForm.style.display = 'none'; // Hide the form instead of removing it
+            const deleteInput = scheduleForm.querySelector('input[name$="-DELETE"]'); // Find the delete input field
+            if (deleteInput) { 
+                deleteInput.value = 'on'; // Mark the form for deletion
             }
         }
     });
