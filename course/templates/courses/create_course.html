@@ -16,7 +16,7 @@
                     {{ schedule_formset.management_form }}
                     <div id="schedule-forms">
                         {% for schedule_form in schedule_formset %}
-                            <div class="schedule-form border p-3 mb-3">
+                            <div class="schedule-form border">
                                 {% for field in schedule_form %}
                                     {% if field.name != 'DELETE' and field.name != 'id' %}
                                         <div class="form-group">

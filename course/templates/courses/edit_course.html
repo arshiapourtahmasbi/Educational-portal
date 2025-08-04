@@ -30,7 +30,7 @@
                             {% for schedule_form in schedule_formset %}
                                 <div class="schedule-form border">
                                     {% for field in schedule_form %}
-                                        {% if field.name != 'DELETE' %}
+                                        {% if field.name != 'DELETE' and field.name != 'id' %}
                                             <div class="form-group">
                                                 {{ field.label_tag }}
                                                 {{ field }}

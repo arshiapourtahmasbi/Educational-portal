@@ -9,22 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     });
 
-    // Form validation
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const requiredFields = form.querySelectorAll('[required]');
-            requiredFields.forEach(field => {
-                if (!field.value) {
-                    e.preventDefault();
-                    field.classList.add('is-invalid');
-                } else {
-                    field.classList.remove('is-invalid');
-                }
-            });
-        });
-    });
-
     // Course card hover effects
     const courseCards = document.querySelectorAll('.card');
     courseCards.forEach(card => {
@@ -35,15 +19,4 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'translateY(0)';
         });
     });
-
-    // Responsive navigation menu
-    const menuToggle = document.querySelector('.menu-toggle');
-    const nav = document.querySelector('nav');
-    
-    if (menuToggle) {
-        menuToggle.addEventListener('click', function() {
-            nav.classList.toggle('active');
-        });
-    }
 });
-
