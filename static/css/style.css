@@ -15,22 +15,6 @@ body {
     overflow: hidden;
 }
 
-/* Navigation */
-nav {
-    background: #333;
-    color: white;
-    padding: 1rem;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-}
-
-nav a:hover {
-    background: #555;
-}
 
 /* Cards */
 .card {

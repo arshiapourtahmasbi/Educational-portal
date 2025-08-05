@@ -27,29 +27,31 @@ class CourseListView(ListView):
 # CreateView for creating a new course
 @method_decorator(login_required, name='dispatch') # Ensure that only logged-in users can access this view. dispatch is a method that handles the request and returns a response.
 class CreateCourseView(CreateView):
-    model = Course
-    form_class = CourseForm
-    template_name = 'courses/create_course.html'
+    model = Course # The model to use for this view
+    form_class = CourseForm # The form class to use for creating a new course
+    template_name = 'courses/create_course.html' # The template to use for rendering the view
+    
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self, **kwargs): # Get the context data for the view
+        context = super().get_context_data(**kwargs) # Get the default context (django provides)
         if self.request.POST:
-            context['schedule_formset'] = ScheduleFormSet(self.request.POST)
+            context['schedule_formset'] = ScheduleFormSet(self.request.POST) # If the request is a POST request, create a ScheduleFormSet with the POST data
         else:
-            context['schedule_formset'] = ScheduleFormSet()
+            context['schedule_formset'] = ScheduleFormSet() # If the request is a GET request, create an empty ScheduleFormSet
+
         return context
 
-    def form_valid(self, form):
-        context = self.get_context_data()
-        schedule_formset = context['schedule_formset']
-        if schedule_formset.is_valid():
+    def form_valid(self, form): # Method to handle the form submission when the form is valid
+        context = self.get_context_data() 
+        schedule_formset = context['schedule_formset'] # Get the ScheduleFormSet from the context
+        if schedule_formset.is_valid(): # Check if the ScheduleFormSet is valid
             self.object = form.save(commit=False)
             self.object.teacher = self.request.user
             self.object.save()
             schedule_formset.instance = self.object
             schedule_formset.save()
             return redirect('course_list')
-        return self.render_to_response(self.get_context_data(form=form))
+        return self.render_to_response(self.get_context_data(form=form)) # If the form is not valid, render the form again with the errors
 
 # View to remove a course
 @login_required

@@ -20,7 +20,7 @@ class Enrollment(models.Model):
     status = models.CharField(
         max_length=20,
         choices=[
-            ('enrolled', 'Enrolled'),
+            ('enrolled', 'Enrolled'), #First one is the value stored in the database, second is the human-readable name
             ('completed', 'Completed'),
             ('dropped', 'Dropped'),
         ],
