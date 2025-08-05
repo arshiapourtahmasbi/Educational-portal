@@ -26,20 +26,25 @@ class CourseListView(ListView):
 
 
 # CreateView for creating a new course
-@method_decorator(login_required, name='dispatch') # Ensure that only logged-in users can access this view. dispatch is a method that handles the request and returns a response.
+@method_decorator(login_required, name='dispatch')
 class CreateCourseView(CreateView):
-    model = Course # The model to use for this view
-    form_class = CourseForm # The form class to use for creating a new course
-    template_name = 'courses/create_course.html' # The template to use for rendering the view
-    
+    model = Course
+    form_class = CourseForm
+    template_name = 'courses/create_course.html'
 
-    def get_context_data(self, **kwargs): # Get the context data for the view
-        context = super().get_context_data(**kwargs) # Get the default context (django provides)
+# Ensure that only teachers and admins can create courses
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_teacher and not request.user.is_admin: # type: ignore 
+            messages.error(request, 'You do not have permission to create a course.')
+            return redirect('course_list')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['schedule_formset'] = ScheduleFormSet(self.request.POST) # If the request is a POST request, create a ScheduleFormSet with the POST data
+            context['schedule_formset'] = ScheduleFormSet(self.request.POST)
         else:
-            context['schedule_formset'] = ScheduleFormSet() # If the request is a GET request, create an empty ScheduleFormSet
-
+            context['schedule_formset'] = ScheduleFormSet()
         return context
 
     def form_valid(self, form): # Method to handle the form submission when the form is valid
