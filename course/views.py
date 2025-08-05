@@ -8,6 +8,7 @@ from student.models import Enrollment
 from django.contrib import messages
 
 # Course views for managing courses, schedules, and enrollments
+# ListView to display all courses
 class CourseListView(ListView):
     model = Course
     context_object_name = 'courses' # Name of the context variable to hold the list of courses
